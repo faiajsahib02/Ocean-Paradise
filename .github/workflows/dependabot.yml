@@ -14,7 +14,7 @@ jobs:
       pull-requests: write
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
 
     - name: Enable Dependabot PR Auto-Merge
       uses: dependabot/fetch-metadata@v1
