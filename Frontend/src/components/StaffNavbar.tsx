@@ -1,5 +1,5 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Menu, X, Hotel, LogOut, Shirt, Users, ChefHat, Utensils, Brush, CreditCard } from 'lucide-react';
+import { Menu, X, Hotel, LogOut, Shirt, Users, ChefHat, Utensils, Brush, CreditCard, Bot } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 
@@ -37,7 +37,7 @@ const StaffNavbar = () => {
           <div className="flex items-center">
             <div className="flex items-center space-x-2">
               <Hotel className="h-8 w-8 text-amber-500" />
-              <span className="font-serif text-2xl font-bold tracking-wider text-white">Ocean <span className="text-amber-500">Admin</span></span>
+              <span className="font-serif text-2xl font-bold tracking-wider text-white">Oasis <span className="text-amber-500">Admin</span></span>
             </div>
           </div>
           
@@ -58,6 +58,10 @@ const StaffNavbar = () => {
               <Link to="/admin/menu" className={getLinkClass('/admin/menu')}>
                 <Utensils className="h-4 w-4" />
                 Menu Manager
+              </Link>
+              <Link to="/admin/concierge" className={getLinkClass('/admin/concierge')}>
+                <Bot className="h-4 w-4" />
+                AI Concierge
               </Link>
               <Link to="/admin/register" className={getLinkClass('/admin/register')}>
                 <Users className="h-4 w-4" />
@@ -115,6 +119,10 @@ const StaffNavbar = () => {
             <Link to="/admin/menu" className={getMobileLinkClass('/admin/menu')}>
               <Utensils className="h-4 w-4" />
               Menu Manager
+            </Link>
+            <Link to="/admin/concierge" className={getMobileLinkClass('/admin/concierge')}>
+              <Bot className="h-4 w-4" />
+              AI Concierge
             </Link>
             <Link to="/admin/register" className={getMobileLinkClass('/admin/register')}>
               <Users className="h-4 w-4" />

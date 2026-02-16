@@ -11,6 +11,7 @@ import (
 	"oasis/backend/rest/handlers/housekeeping"
 	"oasis/backend/rest/handlers/invoice"
 	"oasis/backend/rest/handlers/laundry"
+	raghandler "oasis/backend/rest/handlers/rag"
 	"oasis/backend/rest/handlers/restaurant"
 	"oasis/backend/rest/handlers/room"
 	"oasis/backend/rest/handlers/staff"
@@ -26,6 +27,7 @@ type Server struct {
 	restaurantHandler   *restaurant.Handler
 	housekeepingHandler *housekeeping.Handler
 	invoiceHandler      *invoice.Handler
+	ragHandler          *raghandler.Handler
 }
 
 func NewServer(
@@ -37,6 +39,7 @@ func NewServer(
 	restaurantHandler *restaurant.Handler,
 	housekeepingHandler *housekeeping.Handler,
 	invoiceHandler *invoice.Handler,
+	ragHandler *raghandler.Handler,
 ) *Server {
 	return &Server{
 		cnf:                 cnf,
@@ -47,6 +50,7 @@ func NewServer(
 		restaurantHandler:   restaurantHandler,
 		housekeepingHandler: housekeepingHandler,
 		invoiceHandler:      invoiceHandler,
+		ragHandler:          ragHandler,
 	}
 }
 
@@ -71,6 +75,7 @@ func (server *Server) Start() {
 	server.restaurantHandler.RegisterRoutes(mux, manager)
 	server.housekeepingHandler.RegisterRoutes(mux, manager)
 	server.invoiceHandler.RegisterRoutes(mux, manager)
+	server.ragHandler.RegisterRoutes(mux, manager)
 
 	addr := ":" + strconv.Itoa(server.cnf.HttpPort)
 	fmt.Println("Server running on port", addr)

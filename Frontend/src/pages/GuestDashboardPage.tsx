@@ -116,7 +116,7 @@ const GuestDashboardPage = () => {
             />
             <StayInfoBox 
               label="Wi-Fi Network"
-              value="OceanGuest_Premium"
+              value="OasisGuest_Premium"
               detail="Password: paradise2025"
               icon={<Wifi className="w-5 h-5" />}
             />
@@ -161,7 +161,7 @@ const GuestDashboardPage = () => {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
               <div className="py-6">
                 <p className="text-2xl font-light text-slate-900">✓</p>
-                <p className="text-sm text-slate-600 mt-2">Ocean View</p>
+                <p className="text-sm text-slate-600 mt-2">Oasis View</p>
               </div>
               <div className="py-6">
                 <p className="text-2xl font-light text-slate-900">✓</p>
@@ -200,7 +200,7 @@ const GuestDashboardPage = () => {
                 <Wifi className="w-5 h-5 text-slate-400 mt-0.5 flex-shrink-0" />
                 <div>
                   <p className="font-medium text-slate-900">Support</p>
-                  <p className="text-sm text-slate-600">Email: guest@ocean.com</p>
+                  <p className="text-sm text-slate-600">Email: guest@oasis.com</p>
                 </div>
               </div>
             </div>

@@ -10,6 +10,7 @@ import (
 	"oasis/backend/infra/db"
 	"oasis/backend/invoice"
 	"oasis/backend/laundry"
+	"oasis/backend/rag"
 	"oasis/backend/repository"
 	"oasis/backend/rest"
 	"oasis/backend/restaurant"
@@ -21,6 +22,7 @@ import (
 	housekeepinghandler "oasis/backend/rest/handlers/housekeeping"
 	invoicehandler "oasis/backend/rest/handlers/invoice"
 	laundryhandler "oasis/backend/rest/handlers/laundry"
+	raghandler "oasis/backend/rest/handlers/rag"
 	restauranthandler "oasis/backend/rest/handlers/restaurant"
 	roomhandler "oasis/backend/rest/handlers/room"
 	staffhandler "oasis/backend/rest/handlers/staff"
@@ -72,7 +74,10 @@ func Serve() {
 	// 7. Initialize Middlewares
 	middlewares := middleware.NewMiddlewares(cnf)
 
-	// 8. Initialize Handlers (Ports)
+	// 8. Initialize RAG Service
+	ragSvc := rag.NewService(dbCon, cnf.OpenAIKey)
+
+	// 9. Initialize Handlers (Ports)
 	guestHandler := guesthandler.NewHandler(cnf, guestSvc)
 	staffHandler := staffhandler.NewHandler(cnf, staffSvc)
 	roomHandler := roomhandler.NewHandler(cnf, roomSvc)
@@ -80,8 +85,9 @@ func Serve() {
 	restaurantHandler := restauranthandler.NewHandler(middlewares, restaurantSvc)
 	housekeepingHandler := housekeepinghandler.NewHandler(middlewares, housekeepingSvc, hub)
 	invoiceHandler := invoicehandler.NewHandler(middlewares, invoiceSvc)
+	ragHandler := raghandler.NewHandler(ragSvc)
 
-	// 9. Initialize Server
+	// 10. Initialize Server
 	server := rest.NewServer(
 		cnf,
 		guestHandler,
@@ -91,6 +97,7 @@ func Serve() {
 		restaurantHandler,
 		housekeepingHandler,
 		invoiceHandler,
+		ragHandler,
 	)
 
 	server.Start()

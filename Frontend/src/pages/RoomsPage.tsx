@@ -105,7 +105,7 @@ const RoomsPage = () => {
                   <div className="border-t border-gray-100 pt-4 mt-4">
                     <div className="grid grid-cols-2 gap-2 text-sm text-gray-600 mb-4">
                       <span className="flex items-center">King Bed</span>
-                      <span className="flex items-center">Ocean View</span>
+                      <span className="flex items-center">Oasis View</span>
                       <span className="flex items-center">Free Wi-Fi</span>
                       <span className="flex items-center">Room Service</span>
                     </div>

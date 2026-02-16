@@ -2,7 +2,7 @@ import axios from 'axios';
 import { Room, Guest, LoginRequest, RegisterRequest, LaundryItem, LaundryRequest, CreateLaundryRequest, CategoryWithItems, CreateRestaurantOrder, RestaurantOrder, KitchenOrder } from '../types';
 import { getToken } from '../utils/auth';
 
-const API_URL = 'http://localhost:8080';
+const API_URL = 'http://localhost:8081';
 
 const api = axios.create({
   baseURL: API_URL,

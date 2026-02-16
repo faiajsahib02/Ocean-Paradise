@@ -69,7 +69,7 @@ const MyBill = () => {
           <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-white">
             <Receipt className="w-6 h-6" />
           </div>
-          <h2 className="text-2xl font-serif font-bold text-slate-900">Ocean Paradise Resort</h2>
+          <h2 className="text-2xl font-serif font-bold text-slate-900">Oasis Resort</h2>
           <p className="text-slate-500 text-sm mt-1">Guest Folio</p>
         </div>
 

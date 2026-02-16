@@ -1,7 +1,7 @@
 import { jwtDecode } from 'jwt-decode';
 import { DecodedToken } from '../types';
 
-const TOKEN_KEY = 'ocean_paradise_token';
+const TOKEN_KEY = 'oasis_token';
 
 export const setToken = (token: string) => {
   localStorage.setItem(TOKEN_KEY, token);

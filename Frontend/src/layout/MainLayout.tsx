@@ -17,7 +17,7 @@ const Navbar = () => {
           <div className="flex items-center">
             <Link to="/" className="flex items-center space-x-2">
               <Hotel className="h-8 w-8 text-accent" />
-              <span className="font-serif text-2xl font-bold tracking-wider">Ocean Paradise</span>
+              <span className="font-serif text-2xl font-bold tracking-wider">Oasis</span>
             </Link>
           </div>
           <div className="hidden md:block">
@@ -61,14 +61,14 @@ const Footer = () => (
   <footer className="bg-primary-light text-gray-300 py-12">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8">
       <div>
-        <h3 className="text-white text-lg font-serif font-bold mb-4">Ocean Paradise</h3>
+        <h3 className="text-white text-lg font-serif font-bold mb-4">Oasis</h3>
         <p className="text-sm">Experience the pinnacle of luxury and relaxation at our 5-star oceanfront resort.</p>
       </div>
       <div>
         <h3 className="text-white text-lg font-serif font-bold mb-4">Contact</h3>
-        <p className="text-sm">123 Ocean Drive, Paradise City</p>
+        <p className="text-sm">123 Oasis Drive, Paradise City</p>
         <p className="text-sm">+1 (555) 123-4567</p>
-        <p className="text-sm">info@oceanparadise.com</p>
+        <p className="text-sm">info@oasis.com</p>
       </div>
       <div>
         <h3 className="text-white text-lg font-serif font-bold mb-4">Links</h3>
@@ -79,7 +79,7 @@ const Footer = () => (
       </div>
     </div>
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 pt-8 border-t border-gray-700 text-center text-xs">
-      &copy; {new Date().getFullYear()} Ocean Paradise Hotel. All rights reserved.
+      &copy; {new Date().getFullYear()} Oasis Hotel. All rights reserved.
     </div>
   </footer>
 );

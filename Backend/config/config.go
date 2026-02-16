@@ -24,6 +24,7 @@ type Config struct {
 	ServiceName  string
 	HttpPort     int
 	JwtSecretKey string
+	OpenAIKey    string
 	DB           *DBConfig
 }
 
@@ -59,6 +60,12 @@ func loadConfig() {
 	jwtSecretKey := os.Getenv("JWT_SECRET_KEY")
 	if jwtSecretKey == "" {
 		fmt.Println("jwt secret key is required")
+		os.Exit(1)
+	}
+
+	openAIKey := os.Getenv("OPENAI_API_KEY")
+	if openAIKey == "" {
+		fmt.Println("OpenAI API key is required")
 		os.Exit(1)
 	}
 
@@ -119,6 +126,7 @@ func loadConfig() {
 		ServiceName:  ServiceName,
 		HttpPort:     int(port),
 		JwtSecretKey: jwtSecretKey,
+		OpenAIKey:    openAIKey,
 		DB:           dbConfig,
 	}
 }

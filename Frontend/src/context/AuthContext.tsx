@@ -39,7 +39,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         // If it's a staff token, it might have different claims, or we rely on stored user data.
         
         // Strategy: Store user object in localStorage alongside token for simplicity
-        const storedUser = localStorage.getItem('ocean_paradise_user');
+        const storedUser = localStorage.getItem('oasis_user');
         if (storedUser) {
           setUser(JSON.parse(storedUser));
         } else {
@@ -86,7 +86,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     setUser(newUser);
-    localStorage.setItem('ocean_paradise_user', JSON.stringify(newUser));
+    localStorage.setItem('oasis_user', JSON.stringify(newUser));
   };
 
   const logout = () => {

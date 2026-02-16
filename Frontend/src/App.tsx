@@ -25,7 +25,9 @@ import KitchenDisplay from "./pages/admin/KitchenDisplay";
 import StaffCheckInPage from "./pages/admin/StaffCheckInPage";
 import MenuManager from "./pages/admin/MenuManager";
 import HousekeepingMap from "./pages/admin/HousekeepingMap";
+import ConciergeManager from "./pages/admin/ConciergeManager";
 import CheckoutManager from "./pages/staff/CheckoutManager";
+import { ConciergeChat } from "./components/guest/ConciergeChat";
 
 function App() {
   return (
@@ -64,10 +66,14 @@ function App() {
           <Route path="/admin/kitchen" element={<KitchenDisplay />} />
           <Route path="/admin/menu" element={<MenuManager />} />
           <Route path="/admin/housekeeping" element={<HousekeepingMap />} />
+          <Route path="/admin/concierge" element={<ConciergeManager />} />
           <Route path="/admin/register" element={<StaffCheckInPage />} />
           <Route path="/admin/checkout" element={<CheckoutManager />} />
         </Route>
       </Routes>
+      
+      {/* AI Concierge Chat Widget - Available on all pages */}
+      <ConciergeChat />
     </BrowserRouter>
   );
 }

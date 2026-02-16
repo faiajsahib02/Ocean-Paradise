@@ -20,7 +20,7 @@ const GuestNavbar = () => {
           <div className="flex items-center">
             <Link to="/dashboard" className="flex items-center space-x-2">
               <Hotel className="h-8 w-8 text-amber-500" />
-              <span className="font-serif text-2xl font-bold tracking-wider text-white">Ocean <span className="text-amber-500">Guest</span></span>
+              <span className="font-serif text-2xl font-bold tracking-wider text-white">Oasis <span className="text-amber-500">Guest</span></span>
             </Link>
           </div>
           <div className="hidden md:block">

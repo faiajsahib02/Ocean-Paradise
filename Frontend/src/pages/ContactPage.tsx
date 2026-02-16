@@ -20,7 +20,7 @@ const ContactPage = () => {
                 <MapPin className="w-6 h-6 text-accent mr-4 mt-1" />
                 <div>
                   <h3 className="font-bold text-primary">Address</h3>
-                  <p className="text-gray-600">123 Ocean Drive<br />Paradise City, PC 12345</p>
+                  <p className="text-gray-600">123 Oasis Drive<br />Paradise City, PC 12345</p>
                 </div>
               </div>
               

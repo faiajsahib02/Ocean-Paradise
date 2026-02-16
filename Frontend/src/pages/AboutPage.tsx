@@ -5,7 +5,7 @@ const AboutPage = () => {
     <div className="bg-white">
       {/* Header */}
       <div className="bg-primary py-20 text-center text-white">
-        <h1 className="text-4xl md:text-5xl font-serif font-bold mb-4">About Ocean Paradise</h1>
+        <h1 className="text-4xl md:text-5xl font-serif font-bold mb-4">About Oasis</h1>
         <p className="text-xl text-gray-300 max-w-2xl mx-auto px-4">
           Redefining luxury hospitality since 1995.
         </p>
@@ -17,7 +17,7 @@ const AboutPage = () => {
           <div>
             <h2 className="text-3xl font-serif font-bold text-primary mb-6">Our Story</h2>
             <p className="text-gray-600 mb-4 leading-relaxed">
-              Nestled on the pristine shores of Paradise City, Ocean Paradise began as a dream to create a sanctuary where luxury meets nature. Over the past two decades, we have evolved into an award-winning resort, celebrated for our impeccable service, breathtaking architecture, and commitment to sustainability.
+              Nestled on the pristine shores of Paradise City, Oasis began as a dream to create a sanctuary where luxury meets nature. Over the past two decades, we have evolved into an award-winning resort, celebrated for our impeccable service, breathtaking architecture, and commitment to sustainability.
             </p>
             <p className="text-gray-600 mb-6 leading-relaxed">
               Our philosophy is simple: every guest deserves to feel like royalty. From our private butler service to our curated culinary experiences, every detail is designed to provide an unforgettable escape from the ordinary.
