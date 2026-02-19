@@ -108,6 +108,30 @@ Swapping PostgreSQL for another database, or replacing the REST layer with gRPC,
 
 ---
 
+## AI Concierge — Retrieval-Augmented Generation (RAG)
+
+One of the more technically interesting features of this system is the AI-powered guest concierge, built using a **RAG (Retrieval-Augmented Generation)** pipeline.
+
+Rather than relying on a general-purpose LLM that hallucinates hotel-specific information, the system embeds hotel documents (policies, menus, room details) into a **pgvector** store in PostgreSQL. When a guest asks a question, the relevant context is retrieved via **vector similarity search** and injected into the prompt before being sent to **OpenAI GPT** — so responses are grounded in actual hotel data.
+
+```
+Guest query
+    |
+    v
+Embed query → vector search against pgvector (PostgreSQL)
+    |
+    | top-k matching document chunks
+    v
+Construct prompt: [retrieved context] + [user question]
+    |
+    v
+OpenAI GPT → contextually accurate, hotel-specific response
+```
+
+This is implemented as its own bounded context (`rag/`) following the same Hexagonal Architecture pattern as every other module — the OpenAI and pgvector dependencies are adapters behind an interface, keeping the core retrieval logic testable and decoupled.
+
+---
+
 ## Tech Stack
 
 | Layer | Technology |
@@ -132,7 +156,7 @@ Swapping PostgreSQL for another database, or replacing the REST layer with gRPC,
 | `laundry` | Requests, item-level tracking, status management |
 | `restaurant` | Menu management (with soft delete), orders |
 | `invoice` | Aggregates charges from multiple services into a single bill |
-| `rag` | AI concierge — retrieval-augmented generation via OpenAI + pgvector |
+| `rag` | AI concierge — RAG pipeline: pgvector similarity search + OpenAI GPT for context-aware, hotel-grounded responses |
 
 ---
 
