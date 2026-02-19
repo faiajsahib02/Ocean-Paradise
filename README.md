@@ -1,113 +1,207 @@
 # Oasis — Hotel Management System
 
-Full-stack hotel management system built with **Go** and **React + TypeScript**.
-Manages guests, rooms, staff, housekeeping, laundry, restaurant, invoicing, and an AI concierge — with real-time WebSocket updates and role-based access control.
+A full-stack hotel management system built with **Go** and **React + TypeScript**, designed around **Hexagonal Architecture**, **Domain-Driven Design**, and **SOLID principles**. The codebase is intentionally structured to demonstrate clean software engineering practices: loose coupling, dependency injection, and clear separation of concerns across every layer.
 
-## Tech Stack
-
-| Layer | Tech |
-|-------|------|
-| Backend | Go, Gorilla Mux/WebSocket, sqlx, sql-migrate, custom JWT (HMAC-SHA256), OpenAI API |
-| Frontend | React 18, TypeScript, Vite, Tailwind CSS, React Router, Axios, Framer Motion |
-| Database | PostgreSQL (11 versioned migrations) |
+---
 
 ## Architecture
 
-Hexagonal / Clean Architecture with Domain-Driven Design.
+The backend follows **Hexagonal Architecture (Ports & Adapters)**, keeping the domain core completely isolated from external concerns like HTTP, databases, or third-party APIs. Each layer depends only on abstractions — never on concrete implementations.
 
 ```
-Frontend (React + TS)
-  ↕ HTTP / WebSocket
-REST Handlers → Middleware (JWT auth, CORS)
-  ↓
-Service Layer (8 bounded contexts)
-  ↓ interfaces (ports)
-Repository Layer (adapters)
-  ↓ sqlx
+React + TypeScript (Frontend)
+        |
+        | HTTP / WebSocket
+        v
+REST Handlers  +  Middleware (JWT, CORS)
+        |
+        | calls via interface (Port)
+        v
+Service Layer — business logic, one bounded context per module
+        |
+        | depends on repository interface, not implementation
+        v
+Repository Layer — data access adapters
+        |
+        | sqlx
+        v
 PostgreSQL
 ```
 
-Each domain module (`guest/`, `room/`, `staff/`, `laundry/`, `restaurant/`, `housekeeping/`, `invoice/`, `rag/`) contains:
-- **port.go** — service interface
-- **service.go** — implementation, receives repository via constructor injection
+---
 
-## Features
+## Design Principles
 
-| Module | Highlights |
-|--------|------------|
-| Guest | Registration, auth, check-in/out, profile, booking history |
-| Room | Inventory, status tracking (vacant/occupied/cleaning), availability |
-| Staff | Auth, roles, task assignment, RBAC |
-| Housekeeping | Task assignment & tracking, real-time WebSocket updates |
-| Laundry | Requests, item tracking, status management |
-| Restaurant | Menu CRUD (soft-delete), orders |
-| Invoice | Multi-service charge aggregation, billing |
-| RAG | AI concierge powered by OpenAI GPT |
+### Domain-Driven Design (DDD)
 
-Cross-cutting: JWT authentication, role-based access control (guest / staff / admin), CORS, WebSocket real-time hub.
+The backend is divided into **8 bounded contexts**, each owning its domain model, service, and repository. Domain entities live in `domain/` and are plain Go structs with no framework dependencies — they model the business, nothing else.
+
+```
+domain/
+  guest.go          # Guest entity — check-in, check-out, profile
+  room.go           # Room entity — status: vacant / occupied / cleaning
+  invoice.go        # Invoice entity — aggregates charges across services
+  housekeeping.go   # Housekeeping task entity
+  laundry.go        # Laundry request + items
+  restaurant.go     # Menu items and orders
+  staff.go          # Staff profiles and roles
+```
+
+Naming reflects the business language directly — `CheckInDate`, `RoomStatus`, `InvoicePreview` — not database column names or HTTP fields.
+
+### Hexagonal Architecture — Ports & Adapters
+
+Each module exposes a **Port** (interface) and provides an **Adapter** (implementation). HTTP handlers and repositories both connect to the domain through these interfaces, making every component independently replaceable and testable.
+
+```go
+// port.go — defines what the module can do (the contract)
+type Service interface {
+    Create(room domain.Room) (*domain.Room, error)
+    Find(roomNumber string) (*domain.Room, error)
+    GetAll(status string) ([]domain.Room, error)
+}
+
+// service.go — implements the contract, depends on a repository interface
+type service struct {
+    rmRepo RoomRepo
+}
+
+func NewService(rmRepo RoomRepo) *service {
+    return &service{rmRepo: rmRepo}
+}
+```
+
+The HTTP handler depends on `room.Service` (the interface), not the concrete `service` struct. The repository is also behind an interface. Neither the handler nor the service ever imports a concrete type from the other layer.
+
+### Dependency Injection
+
+All dependencies are wired once at startup in `cmd/serve.go` using **constructor-based injection**. No service creates its own dependencies. No global state. The dependency graph is explicit and fully controlled.
+
+```go
+// cmd/serve.go — full DI composition root
+db         := infra.NewConnection(cfg)
+roomRepo   := repository.NewRoomRepo(db)
+roomSvc    := room.NewService(roomRepo)
+roomHandler := roomhandler.NewHandler(roomSvc)
+```
+
+This means every component can be tested in isolation by injecting a mock — the business logic is never coupled to a real database or HTTP layer.
+
+### Loose Coupling
+
+- Handlers depend on service **interfaces**, not implementations
+- Services depend on repository **interfaces**, not concrete types
+- Domain entities have zero dependencies on any external package
+- No circular imports — the dependency flow is strictly one-directional
+
+Swapping PostgreSQL for another database, or replacing the REST layer with gRPC, would require changes only at the adapter level — the domain and service logic remain untouched.
+
+### SOLID Principles
+
+| Principle | Application |
+|-----------|-------------|
+| **Single Responsibility** | Each service owns exactly one bounded context. Handlers translate HTTP, services apply business rules, repositories access data — each does one thing. |
+| **Open / Closed** | New behaviour is added by implementing existing interfaces, not by modifying existing services. |
+| **Liskov Substitution** | Any repository implementation can replace another without breaking the service that depends on it. |
+| **Interface Segregation** | Each module defines a small, focused interface exposing only what its consumers actually need. |
+| **Dependency Inversion** | High-level modules (services) depend on abstractions (interfaces). Low-level modules (repositories) implement those abstractions. |
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|------------|
+| Backend | Go 1.22, Gorilla Mux, Gorilla WebSocket, sqlx, sql-migrate, godotenv |
+| Auth | Custom JWT — HMAC-SHA256 signing, role claims, middleware enforcement |
+| AI | OpenAI API — RAG-based concierge with vector search (pgvector) |
+| Frontend | React 18, TypeScript, Vite, Tailwind CSS, React Router, Axios, Framer Motion |
+| Database | PostgreSQL 14+, 11 versioned migrations |
+| Real-time | WebSocket hub with goroutine-per-client and broadcast channel |
+
+---
+
+## Modules
+
+| Module | Responsibility |
+|--------|---------------|
+| `guest` | Registration, authentication, check-in/out, profiles |
+| `room` | Inventory, availability, status lifecycle |
+| `staff` | Staff accounts, roles, RBAC |
+| `housekeeping` | Task assignment, real-time status via WebSocket |
+| `laundry` | Requests, item-level tracking, status management |
+| `restaurant` | Menu management (with soft delete), orders |
+| `invoice` | Aggregates charges from multiple services into a single bill |
+| `rag` | AI concierge — retrieval-augmented generation via OpenAI + pgvector |
+
+---
 
 ## Project Structure
 
 ```
 Backend/
-├── cmd/serve.go            # App bootstrap & dependency injection
-├── config/                 # Env-based configuration
-├── domain/                 # Pure business entities (DDD)
-├── guest/ room/ staff/     # Service modules (port.go + service.go)
-│   laundry/ restaurant/
-│   housekeeping/ invoice/ rag/
-├── repository/             # Database implementations
+├── cmd/serve.go          # Composition root — wires all dependencies
+├── config/               # Environment-based configuration
+├── domain/               # Business entities — no framework imports
+├── {module}/
+│   ├── port.go           # Service interface (the contract)
+│   └── service.go        # Business logic implementation
+├── repository/           # Database adapters (implement service interfaces)
 ├── rest/
-│   ├── server.go           # Router setup
-│   ├── handlers/           # HTTP handlers per module
-│   └── middlewares/        # Auth, CORS
-├── infra/db/               # Connection & migration runner
-├── migrations/             # SQL migration files
-├── ws/                     # WebSocket hub & client
-└── util/                   # JWT helpers, response formatting
+│   ├── handlers/         # HTTP adapters — translate requests to service calls
+│   └── middlewares/      # JWT auth, CORS, role enforcement
+├── infra/db/             # Database connection and migration runner
+├── migrations/           # SQL migration files (versioned)
+├── ws/                   # WebSocket hub and client management
+└── util/                 # JWT generation/parsing, response helpers
 
 Frontend/src/
-├── App.tsx                 # Root component & routing
-├── context/AuthContext.tsx  # Global auth state
-├── pages/                  # Guest, staff, admin pages
-├── components/             # Shared UI (Button, Card, Navbar, ProtectedRoute)
-├── layouts/                # Guest / Staff / Public layouts
-├── services/api.ts         # Axios HTTP client
-└── types/index.ts          # TypeScript interfaces
+├── context/AuthContext   # Global auth state via Context API
+├── pages/                # Role-scoped pages: guest, staff, admin
+├── components/           # Reusable UI components
+├── layouts/              # Guest, Staff, Public layout wrappers
+├── services/api.ts       # Axios instance and API layer
+└── types/index.ts        # Shared TypeScript interfaces
 ```
+
+---
 
 ## Getting Started
 
-### Prerequisites
-
-Go 1.22+, Node.js 18+, PostgreSQL 14+
-
-### Backend
+**Prerequisites:** Go 1.22+, Node.js 18+, PostgreSQL 14+
 
 ```bash
+# Backend
 cd Backend
 go mod download
 
-# create Backend/.env
-# DB_HOST=localhost DB_PORT=5432 DB_USER=... DB_PASSWORD=... DB_NAME=oasis
-# JWT_SECRET=... PORT=8080 OPENAI_API_KEY=...
+# Backend/.env
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=postgres
+DB_PASSWORD=yourpassword
+DB_NAME=oasis
+JWT_SECRET=your_secret
+PORT=8080
+OPENAI_API_KEY=your_key
 
 go run main.go migrate
-go run main.go          # → http://localhost:8080
-```
+go run main.go
+# API available at http://localhost:8080
 
-### Frontend
-
-```bash
+# Frontend (new terminal)
 cd Frontend
 npm install
 
-# create Frontend/.env
-# VITE_API_URL=http://localhost:8080
-# VITE_WS_URL=ws://localhost:8080/ws
+# Frontend/.env
+VITE_API_URL=http://localhost:8080
+VITE_WS_URL=ws://localhost:8080/ws
 
-npm run dev             # → http://localhost:5173
+npm run dev
+# App available at http://localhost:5173
 ```
+
+---
 
 ## License
 
