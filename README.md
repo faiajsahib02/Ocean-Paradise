@@ -6,11 +6,11 @@ A full-stack hotel management system built with **Go** and **React + TypeScript*
 
 ## Motivation
 
-Building a hotel management system means juggling a lot: guests checking in and out, rooms changing status in real time, housekeeping tasks being assigned and tracked, laundry and restaurant orders overlapping, and all of it eventually rolling up into a single invoice. Most hobby projects shy away from that kind of complexity — I wanted to lean into it.
+Building a hotel management system means juggling a lot: guests checking in and out, rooms changing status in real time, housekeeping tasks being assigned and tracked, laundry and restaurant orders overlapping, and all of it eventually rolling up into a single invoice. Most hobby projects shy away from that kind of complexity, I wanted to lean into it.
 
 I built Oasis specifically to work with a domain that has **multiple interacting bounded contexts**, which made it the perfect playground for applying Hexagonal Architecture and Domain-Driven Design in a realistic setting. I also wanted to explore **RAG (Retrieval-Augmented Generation)** in a context where it actually makes sense: a hotel concierge that answers questions grounded in real hotel data, not generic LLM hallucinations.
 
-The result is a system where every architectural decision — from the strict interface boundaries to the dependency injection wiring — has a purpose rooted in solving a real design problem.
+The result is a system where every architectural decision from the strict interface boundaries to the dependency injection wiring has a purpose rooted in solving a real design problem.
 
 ---
 
@@ -44,7 +44,7 @@ PostgreSQL
 
 ### Domain-Driven Design (DDD)
 
-The backend is divided into **8 bounded contexts**, each owning its domain model, service, and repository. Domain entities live in `domain/` and are plain Go structs with no framework dependencies — they model the business, nothing else.
+The backend is divided into **8 bounded contexts**, each owning its domain model, service, and repository. Domain entities live in `domain/` and are plain Go structs with no framework dependencies , they model the business, nothing else.
 
 ```
 domain/
