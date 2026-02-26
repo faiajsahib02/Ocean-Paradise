@@ -4,6 +4,16 @@ A full-stack hotel management system built with **Go** and **React + TypeScript*
 
 ---
 
+## 💡 Motivation
+
+Building a hotel management system means juggling a lot: guests checking in and out, rooms changing status in real time, housekeeping tasks being assigned and tracked, laundry and restaurant orders overlapping, and all of it eventually rolling up into a single invoice. Most hobby projects shy away from that kind of complexity — I wanted to lean into it.
+
+I built Oasis specifically to work with a domain that has **multiple interacting bounded contexts**, which made it the perfect playground for applying Hexagonal Architecture and Domain-Driven Design in a realistic setting. I also wanted to explore **RAG (Retrieval-Augmented Generation)** in a context where it actually makes sense: a hotel concierge that answers questions grounded in real hotel data, not generic LLM hallucinations.
+
+The result is a system where every architectural decision — from the strict interface boundaries to the dependency injection wiring — has a purpose rooted in solving a real design problem.
+
+---
+
 ## Architecture
 
 The backend follows **Hexagonal Architecture (Ports & Adapters)**, keeping the domain core completely isolated from external concerns like HTTP, databases, or third-party APIs. Each layer depends only on abstractions — never on concrete implementations.
@@ -98,13 +108,13 @@ Swapping PostgreSQL for another database, or replacing the REST layer with gRPC,
 
 ### SOLID Principles
 
-| Principle | Application |
-|-----------|-------------|
+| Principle                 | Application                                                                                                                                            |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Single Responsibility** | Each service owns exactly one bounded context. Handlers translate HTTP, services apply business rules, repositories access data — each does one thing. |
-| **Open / Closed** | New behaviour is added by implementing existing interfaces, not by modifying existing services. |
-| **Liskov Substitution** | Any repository implementation can replace another without breaking the service that depends on it. |
-| **Interface Segregation** | Each module defines a small, focused interface exposing only what its consumers actually need. |
-| **Dependency Inversion** | High-level modules (services) depend on abstractions (interfaces). Low-level modules (repositories) implement those abstractions. |
+| **Open / Closed**         | New behaviour is added by implementing existing interfaces, not by modifying existing services.                                                        |
+| **Liskov Substitution**   | Any repository implementation can replace another without breaking the service that depends on it.                                                     |
+| **Interface Segregation** | Each module defines a small, focused interface exposing only what its consumers actually need.                                                         |
+| **Dependency Inversion**  | High-level modules (services) depend on abstractions (interfaces). Low-level modules (repositories) implement those abstractions.                      |
 
 ---
 
@@ -134,29 +144,29 @@ This is implemented as its own bounded context (`rag/`) following the same Hexag
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|------------|
-| Backend | Go 1.22, Gorilla Mux, Gorilla WebSocket, sqlx, sql-migrate, godotenv |
-| Auth | Custom JWT — HMAC-SHA256 signing, role claims, middleware enforcement |
-| AI | OpenAI API — RAG-based concierge with vector search (pgvector) |
-| Frontend | React 18, TypeScript, Vite, Tailwind CSS, React Router, Axios, Framer Motion |
-| Database | PostgreSQL 14+, 11 versioned migrations |
-| Real-time | WebSocket hub with goroutine-per-client and broadcast channel |
+| Layer     | Technology                                                                   |
+| --------- | ---------------------------------------------------------------------------- |
+| Backend   | Go 1.22, Gorilla Mux, Gorilla WebSocket, sqlx, sql-migrate, godotenv         |
+| Auth      | Custom JWT — HMAC-SHA256 signing, role claims, middleware enforcement        |
+| AI        | OpenAI API — RAG-based concierge with vector search (pgvector)               |
+| Frontend  | React 18, TypeScript, Vite, Tailwind CSS, React Router, Axios, Framer Motion |
+| Database  | PostgreSQL 14+, 11 versioned migrations                                      |
+| Real-time | WebSocket hub with goroutine-per-client and broadcast channel                |
 
 ---
 
 ## Modules
 
-| Module | Responsibility |
-|--------|---------------|
-| `guest` | Registration, authentication, check-in/out, profiles |
-| `room` | Inventory, availability, status lifecycle |
-| `staff` | Staff accounts, roles, RBAC |
-| `housekeeping` | Task assignment, real-time status via WebSocket |
-| `laundry` | Requests, item-level tracking, status management |
-| `restaurant` | Menu management (with soft delete), orders |
-| `invoice` | Aggregates charges from multiple services into a single bill |
-| `rag` | AI concierge — RAG pipeline: pgvector similarity search + OpenAI GPT for context-aware, hotel-grounded responses |
+| Module         | Responsibility                                                                                                   |
+| -------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `guest`        | Registration, authentication, check-in/out, profiles                                                             |
+| `room`         | Inventory, availability, status lifecycle                                                                        |
+| `staff`        | Staff accounts, roles, RBAC                                                                                      |
+| `housekeeping` | Task assignment, real-time status via WebSocket                                                                  |
+| `laundry`      | Requests, item-level tracking, status management                                                                 |
+| `restaurant`   | Menu management (with soft delete), orders                                                                       |
+| `invoice`      | Aggregates charges from multiple services into a single bill                                                     |
+| `rag`          | AI concierge — RAG pipeline: pgvector similarity search + OpenAI GPT for context-aware, hotel-grounded responses |
 
 ---
 
@@ -190,12 +200,20 @@ Frontend/src/
 
 ---
 
-## Getting Started
+## 🚀 Quick Start
 
 **Prerequisites:** Go 1.22+, Node.js 18+, PostgreSQL 14+
 
+### 1. Clone the repository
+
 ```bash
-# Backend
+git clone https://github.com/your-username/oasis.git
+cd oasis
+```
+
+### 2. Set up and run the backend
+
+```bash
 cd Backend
 go mod download
 
@@ -212,22 +230,115 @@ OPENAI_API_KEY=your_key
 go run main.go migrate
 go run main.go
 # API available at http://localhost:8080
+```
 
-# Frontend (new terminal)
+### 3. Set up and run the frontend
+
+```bash
+# In a new terminal
 cd Frontend
 npm install
+```
 
-# Frontend/.env
+Create `Frontend/.env`:
+
+```env
 VITE_API_URL=http://localhost:8080
 VITE_WS_URL=ws://localhost:8080/ws
+```
 
+```bash
 npm run dev
 # App available at http://localhost:5173
 ```
 
 ---
 
+## 📖 Usage
+
+Once the app is running, navigate to `http://localhost:5173`.
+
+### Guest Portal
+
+- **Register / log in** as a guest to access the guest dashboard
+- **View available rooms** and browse the hotel's room inventory
+- **Submit service requests** — laundry pick-up, restaurant orders, housekeeping calls
+- **Chat with the AI Concierge** — ask questions about the hotel and get answers grounded in real hotel data via the RAG pipeline
+- **View your invoice** — all charges from all services are aggregated into a single bill
+
+### Staff Portal
+
+- **Log in** with a staff account to access the staff dashboard
+- **Manage room statuses** — mark rooms as vacant, occupied, or in-cleaning
+- **Handle housekeeping tasks** in real time — task status updates are pushed via WebSocket
+- **Process laundry requests** — view items, update status per request
+- **Manage restaurant orders** and the menu (add, update, soft-delete items)
+- **Generate guest invoices** aggregating all service charges
+
+### Admin
+
+- Full access to all staff functionality
+- **Manage staff accounts** — create and assign roles (staff / admin)
+- Configure hotel documents used by the AI Concierge RAG pipeline (menus, policies, room details)
+
+### API Endpoints
+
+The REST API is available at `http://localhost:8080`. Key endpoint groups:
+
+| Prefix             | Description                          |
+| ------------------ | ------------------------------------ |
+| `POST /guest/register` | Guest registration                 |
+| `POST /guest/login`    | Guest & staff authentication       |
+| `GET  /rooms`          | Room availability                  |
+| `POST /laundry`        | Submit a laundry request           |
+| `POST /restaurant/order` | Place a restaurant order         |
+| `GET  /invoice/:id`    | Fetch aggregated invoice for guest |
+| `POST /rag/ask`        | Query the AI concierge             |
+| `WS   /ws`             | WebSocket connection for real-time updates |
+
+All protected routes require a **JWT Bearer token** in the `Authorization` header.
+
+---
+
+## 🤝 Contributing
+
+### Clone the repo
+
+```bash
+git clone https://github.com/your-username/oasis.git
+cd oasis
+```
+
+### Run the backend
+
+```bash
+cd Backend
+go mod download
+go run main.go migrate   # run database migrations
+go run main.go           # start the API server
+```
+
+### Run the frontend
+
+```bash
+cd Frontend
+npm install
+npm run dev
+```
+
+### Run the backend tests
+
+```bash
+cd Backend
+go test ./...
+```
+
+### Submit a pull request
+
+If you'd like to contribute, please **fork the repository** and open a pull request to the `main` branch. Make sure your code follows the existing hexagonal structure — new features should be added as their own bounded context with a `port.go` and `service.go`, wired up in `cmd/serve.go`.
+
+---
+
 ## License
 
 MIT
-
