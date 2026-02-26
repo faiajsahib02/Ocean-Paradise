@@ -4,7 +4,7 @@ A full-stack hotel management system built with **Go** and **React + TypeScript*
 
 ---
 
-## 💡 Motivation
+## Motivation
 
 Building a hotel management system means juggling a lot: guests checking in and out, rooms changing status in real time, housekeeping tasks being assigned and tracked, laundry and restaurant orders overlapping, and all of it eventually rolling up into a single invoice. Most hobby projects shy away from that kind of complexity — I wanted to lean into it.
 
@@ -200,7 +200,7 @@ Frontend/src/
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 **Prerequisites:** Go 1.22+, Node.js 18+, PostgreSQL 14+
 
@@ -254,7 +254,7 @@ npm run dev
 
 ---
 
-## 📖 Usage
+## Usage
 
 Once the app is running, navigate to `http://localhost:5173`.
 
@@ -300,7 +300,7 @@ All protected routes require a **JWT Bearer token** in the `Authorization` heade
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 ### Clone the repo
 
